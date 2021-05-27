@@ -1,5 +1,5 @@
 defmodule Shopee do
-  @behaviour Crawly.Spider
+  use Crawly.Spider
 
   @doc """
   Execute by
@@ -12,7 +12,7 @@ defmodule Shopee do
   end
 
   @impl Crawly.Spider
-  def init() do
+  def init(_) do
     [start_urls: ["https://shopee.com.my/search?keyword=computer"]]
   end
 
