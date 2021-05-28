@@ -1,9 +1,11 @@
 defmodule Shopee do
-  use Crawly.Spider
+  @behaviour Crawly.Spider
 
   @doc """
   Execute by
   Crawly.Engine.start_spider({defmodule_name})
+  eg.
+    ``` Crawly.Engine.start_spider(Shopee)```
   """
 
   @impl Crawly.Spider
@@ -13,14 +15,14 @@ defmodule Shopee do
 
   @impl Crawly.Spider
   def init(_) do
-    [start_urls: ["https://shopee.com.my/search?keyword=computer"]]
+    [start_urls: ["https://shopee.com.my/api/v2/search_items/?by=relevancy&keyword=computer&limit=10&newest=0&order=desc&page_type=search"]]
   end
 
   @impl Crawly.Spider
   def parse_item(response) do
     urls =
       response.body
-      |> Floki.find(".a._35LNwy")
+      |> Floki.find("a._1YAByT")
       |> Floki.attribute("href")
 
     requests =
@@ -40,13 +42,14 @@ defmodule Shopee do
       |> Floki.find("._5W0f35")
       |> Floki.text(deep: false, sep: "")
 
+    IO.puts "#{response.body} \n" |> to_string()
+
     %Crawly.ParsedItem {
       :requests => requests,
       :items => [
         %{name: name, price: price}
       ]
     }
-
   end
 
   def build_absolute_url(url, request_url) do
